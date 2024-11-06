@@ -97,4 +97,4 @@ end
 -- Kết nối nút bấm với các hàm
 effectButton.MouseButton1Click:Connect(toggleEffects)
 lagButton.MouseButton1Click:Connect(reduceLag)
-loadstring(game:HttpGet(""))()
+loadstring(game:HttpGet("https://github.dev/Tdan2k4/T/blob/main/hieuungv2.txt"))()
