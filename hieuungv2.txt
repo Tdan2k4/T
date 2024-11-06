@@ -1,0 +1,100 @@
+-- Bắt đầu tạo GUI Menu
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = playerGui
+
+local menuFrame = Instance.new("Frame")
+menuFrame.Size = UDim2.new(0, 200, 0, 150)
+menuFrame.Position = UDim2.new(0, 10, 0, 10)
+menuFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+menuFrame.Parent = screenGui
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(0, 200, 0, 30)
+titleLabel.Text = "Effect & Lag Reduction"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Parent = menuFrame
+
+local effectButton = Instance.new("TextButton")
+effectButton.Size = UDim2.new(0, 180, 0, 40)
+effectButton.Position = UDim2.new(0, 10, 0, 40)
+effectButton.Text = "Toggle Effects"
+effectButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+effectButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+effectButton.Parent = menuFrame
+
+local lagButton = Instance.new("TextButton")
+lagButton.Size = UDim2.new(0, 180, 0, 40)
+lagButton.Position = UDim2.new(0, 10, 0, 90)
+lagButton.Text = "Reduce Lag"
+lagButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+lagButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+lagButton.Parent = menuFrame
+
+-- Biến kiểm soát trạng thái hiệu ứng và lag
+local effectsEnabled = true
+local lagReduced = false
+
+-- Hàm tắt/bật tất cả hiệu ứng
+local function toggleEffects()
+    effectsEnabled = not effectsEnabled
+
+    if effectsEnabled then
+        -- Bật lại hiệu ứng
+        game.Lighting.GlobalShadows = true
+        game.Lighting.Bloom.Enabled = true
+        game.Lighting.ColorCorrection.Enabled = true
+        game.Lighting.LensDistortion.Enabled = true
+        -- Bật lại các hiệu ứng âm thanh trong game
+        game:GetService("SoundService").SoundEnabled = true
+        print("Effects Enabled")
+    else
+        -- Tắt các hiệu ứng
+        game.Lighting.GlobalShadows = false
+        game.Lighting.Bloom.Enabled = false
+        game.Lighting.ColorCorrection.Enabled = false
+        game.Lighting.LensDistortion.Enabled = false
+        -- Tắt âm thanh để giảm lag
+        game:GetService("SoundService").SoundEnabled = false
+        print("Effects Disabled")
+    end
+end
+
+-- Hàm giảm lag
+local function reduceLag()
+    lagReduced = not lagReduced
+
+    if lagReduced then
+        -- Giảm các hiệu ứng đồ họa nặng
+        game.Lighting.QualityLevel = Enum.QualityLevel.Level01  -- Chọn chất lượng thấp nhất
+        game.Lighting.GlobalShadows = false
+        game.Lighting.Bloom.Enabled = false
+        game.Lighting.ColorCorrection.Enabled = false
+        -- Tắt các hiệu ứng khác để giảm tải cho hệ thống
+        game.Lighting.LensDistortion.Enabled = false
+        -- Tắt các Particle Effects
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA("ParticleEmitter") then
+                v.Enabled = false
+            end
+        end
+        -- Tắt một số hiệu ứng vật lý không cần thiết
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA("Explosion") or v:IsA("Fire") or v:IsA("Smoke") then
+                v:Destroy() -- Xóa tất cả hiệu ứng này để giảm lag
+            end
+        end
+        print("Lag Reduced")
+    else
+        -- Khôi phục lại các hiệu ứng
+        game.Lighting.QualityLevel = Enum.QualityLevel.Level03  -- Khôi phục lại chất lượng đồ họa
+        print("Lag Reduction Disabled")
+    end
+end
+
+-- Kết nối nút bấm với các hàm
+effectButton.MouseButton1Click:Connect(toggleEffects)
+lagButton.MouseButton1Click:Connect(reduceLag)
+loadstring(game:HttpGet(""))()
